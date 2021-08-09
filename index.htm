@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Is this product meltable?</title>
+    <meta
+      name="description"
+      content="a website to check if an Amazon product is meltable"
+    />
+
+    <link
+      id="styleLink"
+      href="./mdb/css/mdb.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+    />
+  </head>
+
+  <body>
+    <!-- Start -->
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-lg-6 mx-auto">
+          <div class="card mt-4">
+            <div class="card-body">
+              <h5 class="card-title">Is it meltable?</h5>
+              <button
+                id="lightswitch"
+                value="1"
+                onclick="toggleLightSwitch(this)"
+                type="button"
+                class="btn btn-sm btn-light float-end"
+                data-mdb-ripple-color="dark"
+              >
+                <i class="far fa-lightbulb"></i>
+              </button>
+              <p class="card-text">
+                Check whether an ASIN is in the meltable list
+              </p>
+              <div class="input-group input-group-lg flex-nowrap mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-lg"
+                  ><em>ASIN:</em></span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="asin"
+                  required
+                  aria-label="Enter ASIN"
+                  aria-describedby="addon-wrapping"
+                  onkeyup="enableSubmit(this)"
+                  onchange="disableSubmit(this)"
+                />
+              </div>
+              <div class="input-group input-group-lg flex-nowrap mb-1">
+                <input
+                  id="inputCheckAsin"
+                  class="btn btn-primary btn-lg mb-1"
+                  type="button"
+                  onclick="checkAsin()"
+                  value="Check Now!"
+                  disabled
+                />
+              </div>
+            </div>
+            <div id="result" class="card-footer text-muted"></div>
+            <div class="card-footer text-muted">
+              We take no responsibility for the accuracy of these results
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End -->
+
+    <script src="./meltArray.js"></script>
+    <script>
+      function enableSubmit(e) {
+        if (e.value !== null || e.value !== undefined) {
+          document.getElementById("inputCheckAsin").removeAttribute("disabled");
+        }
+      }
+
+      function disableSubmit(e) {
+        if (e.value.trim() == "") {
+          document.getElementById("inputCheckAsin").disabled = true;
+        }
+      }
+
+      function checkAsin() {
+        const asin = document.getElementById("asin").value;
+        const resultEl = document.getElementById("result");
+
+        const isMeltable = meltArray.includes(asin);
+
+        if (isMeltable) {
+          resultEl.innerHTML = `<p style="color:red;">${asin} is meltable</p>`;
+        }
+
+        if (!isMeltable) {
+          resultEl.innerHTML = `<p style="color:green;">${asin} is not meltable</p>`;
+        }
+      }
+
+      const MODES = {
+        dark: "./mdb/css/mdb.dark.min.css",
+        light: "./mdb/css/mdb.min.css",
+      };
+
+      function flipState(state) {
+        return (state ^= true);
+      }
+
+      function getSheet(mode) {
+        return MODES[mode];
+      }
+
+      function setPageStyle(styleSheet) {
+        document.getElementById("styleLink").setAttribute("href", styleSheet);
+      }
+
+      function toggleLightSwitch(e) {
+        const switchedState = flipState(e.value);
+        e.value = switchedState;
+        const pageStyle = switchedState ? "light" : "dark";
+        setPageStyle(getSheet(pageStyle));
+      }
+    </script>
+    <script src="./mdb/js/mdb.min.js"></script>
+  </body>
+</html>
